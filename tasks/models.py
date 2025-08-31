@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -24,7 +25,7 @@ class Task(models.Model):
 
 
     executor = models.ForeignKey(User, related_name='tasks', verbose_name='исполнитель', on_delete=models.SET_NULL,
-                                 blank=True, null=True)
+                                 blank=True, null=True, db_index=True)
     author = models.ForeignKey(User, related_name='tasks', verbose_name='автор', on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=150, verbose_name='имя задачи')
     description = models.TextField(verbose_name='описание задачи')
@@ -45,4 +46,7 @@ class Task(models.Model):
         if self.parent and self.parent_id == self.id:
             raise ValidationError('Задача не может быть родителем для самой себя')
 
-
+    def save(self, *args, **kwargs):
+        if self.status == self.Status.DONE and not self.completed_at:
+            self.completed_at = timezone.now()
+        super().save(*args, **kwargs)

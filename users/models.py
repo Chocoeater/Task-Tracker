@@ -29,7 +29,7 @@ class User(AbstractUser):
         verbose_name_plural = "пользователи"
 
     def __str__(self):
-        return f"{self.username} -- {self.email}"
+        return f"{self.full_name}"
 
     @property
     def full_name(self):
@@ -37,3 +37,4 @@ class User(AbstractUser):
         parts = [self.last_name, self.first_name, self.middle_name]
         full = " ".join(p for p in parts if p)
         return full.strip() if full else self.email
+
