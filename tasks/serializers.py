@@ -1,8 +1,8 @@
 from datetime import timedelta
 
 from django.utils import timezone
-from rest_framework.fields import SerializerMethodField, CharField
-from rest_framework.serializers import ModelSerializer
+from rest_framework.fields import SerializerMethodField
+from rest_framework.serializers import ModelSerializer, CharField
 
 from tasks import validators
 from tasks.models import Task
