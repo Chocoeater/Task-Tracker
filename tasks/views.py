@@ -5,16 +5,17 @@ from rest_framework.response import Response
 
 from tasks import serializers
 from tasks.models import Task
-from users.permissions import IsManagerOrAdminOrExecutor, IsManagerOrAdmin, IsExecutor
+from users.permissions import IsManagerOrAdmin, IsExecutor
+from django.db.models import Q
 
 
 class TasksViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
-            permission_classes = [IsAuthenticated, IsManagerOrAdminOrExecutor]
-        elif self.action in ['create', 'update', 'partial_update', 'delete']:
+        if self.action in ['create', 'update', 'partial_update', 'delete']:
             permission_classes = [IsAuthenticated, IsManagerOrAdmin]
+        elif self.action in ['list', 'retrieve']:
+            permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAuthenticated, IsExecutor] # take
         return [perm() for perm in permission_classes]
@@ -24,7 +25,7 @@ class TasksViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_superuser or user.role == 'manager':
             return Task.objects.all()
-        return Task.objects.filter(executor=user)
+        return Task.objects.filter(Q(executor=user) | Q(executor__isnull=True))
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
@@ -42,7 +43,8 @@ class TasksViewSet(viewsets.ModelViewSet):
             )
 
         task.executor = request.user
-        task.save(update_fields=['executor'])
+        task.status = 'in_progress'
+        task.save(update_fields=['executor', 'status'])
 
         return Response(
             {'detail': f'Задача назначена на {request.user.full_name}'},

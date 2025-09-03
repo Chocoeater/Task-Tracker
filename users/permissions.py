@@ -13,7 +13,4 @@ class IsExecutor(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.executor == request.user
 
-class IsManagerOrAdminOrExecutor(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_superuser or request.user.role == 'manager' or obj.executor == request.user
 
