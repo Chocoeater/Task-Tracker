@@ -1,26 +1,29 @@
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework.fields import SerializerMethodField
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework import serializers
 
 from tasks import validators
 from tasks.models import Task
 
-class TaskSubtaskSerializer(ModelSerializer):
+User = get_user_model()
+
+class TaskSubtaskSerializer(serializers.ModelSerializer):
     """Подзадачи"""
     class Meta:
         model = Task
         fields = ["id", "name", "status", "priority", "deadline"]
 
 
-class TaskReadSerializers(ModelSerializer):
+class TaskReadSerializer(serializers.ModelSerializer):
     """Для чтения таски"""
     subtasks = TaskSubtaskSerializer(many=True, read_only=True)
     time_left = SerializerMethodField()
     is_overdue = SerializerMethodField()
-    executor_name = CharField(source="executor.full_name", read_only=True)
-    author_email = CharField(source="author.email", read_only=True)
+    executor_name = serializers.CharField(source="executor.full_name", read_only=True)
+    author_email = serializers.CharField(source="author.email", read_only=True)
 
     def get_time_left(self, obj):
         if obj.deadline and obj.status in ['created', 'in_progress']:
@@ -48,7 +51,7 @@ class TaskReadSerializers(ModelSerializer):
             'is_overdue'
         ]
 
-class TaskWriteSerializer(ModelSerializer):
+class TaskWriteSerializer(serializers.ModelSerializer):
     """Для создания таски"""
     class Meta:
         model = Task
@@ -63,3 +66,17 @@ class TaskWriteSerializer(ModelSerializer):
         validators.validate_deadline(attrs, self.instance)
         validators.validate_parent(attrs, self.instance)
         return attrs
+
+class TaskAssignSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Task
+        fields = ['executor_id']
+
+    executor_id = serializers.IntegerField(required=False, help_text='ID пользователя для назначения')
+
+    def validate_user_id(self, value):
+        if not User.objects.filter(id=value).exists():
+            raise serializers.ValidationError('Пользователя с таким ID не существует')
+        return value
+
