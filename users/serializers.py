@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer, CharField
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.utils import timezone
 
 User = get_user_model()
 
 class UserReadSerializer(ModelSerializer):
-    full_name = CharField(source="full_name", read_only=True)
+    full_name = CharField(read_only=True)
 
     class Meta:
         model = User
@@ -33,7 +34,7 @@ class UserWriteSerializer(ModelSerializer):
         ]
 
     def create(self, validated_data):
-        user = User.objects.create_user(
+        user = User.objects.create(
             email=validated_data['email'],
             password=validated_data['password'],
             first_name=validated_data['first_name'],
@@ -50,3 +51,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
 
         return token
+
+    def validate(self, attrs): # После верного ввода логина и пароля, но до токена.
+        data = super().validate(attrs)
+        self.user.last_login = timezone.now()
+        self.user.save() # Обновляется last_login, т.к. в модели auto_now=True
+        return data

@@ -19,6 +19,23 @@ class TaskSubtaskSerializer(serializers.ModelSerializer):
 
 class TaskReadSerializer(serializers.ModelSerializer):
     """Для чтения таски"""
+
+    class Meta:
+        model = Task
+        fields = [
+            'id',
+            'executor_name',
+            'author_email',
+            'subtasks',
+            'status',
+            'priority',
+            'created_at',
+            'updated_at',
+            'completed_at',
+            'time_left',
+            'is_overdue'
+        ]
+
     subtasks = TaskSubtaskSerializer(many=True, read_only=True)
     time_left = SerializerMethodField()
     is_overdue = SerializerMethodField()
@@ -36,20 +53,7 @@ class TaskReadSerializer(serializers.ModelSerializer):
             return time_left < timedelta(0)
         return None
 
-    class Meta:
-        model = Task
-        fields = [
-            'executor_name',
-            'author_email',
-            'subtasks',
-            'status',
-            'priority',
-            'created_at',
-            'updated_at',
-            'completed_at',
-            'time_left',
-            'is_overdue'
-        ]
+
 
 class TaskWriteSerializer(serializers.ModelSerializer):
     """Для создания таски"""
@@ -75,7 +79,7 @@ class TaskAssignSerializer(serializers.ModelSerializer):
 
     executor_id = serializers.IntegerField(required=False, help_text='ID пользователя для назначения')
 
-    def validate_user_id(self, value):
+    def validate_executor_id(self, value):
         if not User.objects.filter(id=value).exists():
             raise serializers.ValidationError('Пользователя с таким ID не существует')
         return value

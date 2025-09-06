@@ -25,13 +25,13 @@ class TasksViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser or user.role == 'manager':
+        if user.is_superuser or user.role == 'manager' or self.action == 'assign':
             return Task.objects.all()
         return Task.objects.filter(executor=user)
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
-            return serializers.TaskReadSerializers
+            return serializers.TaskReadSerializer
         elif self.action in ['assign']:
             return serializers.TaskAssignSerializer
         return serializers.TaskWriteSerializer
@@ -42,7 +42,7 @@ class TasksViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user_id = serializer.validated_data.get('user_id')
+        user_id = serializer.validated_data.get('executor_id')
 
         if not user_id:
             target_user = request.user

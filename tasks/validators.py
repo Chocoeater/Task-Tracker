@@ -1,4 +1,4 @@
-import datetime
+from django.utils import timezone
 
 from rest_framework.exceptions import ValidationError
 
@@ -10,7 +10,7 @@ def validate_deadline(attrs, instance=None):
         if deadline is None:
             deadline = instance.deadline
 
-    if deadline < datetime.datetime.now():
+    if deadline < timezone.now():
         raise ValidationError('Дедлайн не может быть меньше даты создания')
 
 def validate_parent(attrs, instance=None):
@@ -20,6 +20,7 @@ def validate_parent(attrs, instance=None):
     if instance:
         if parent is None:
             parent = instance.parent
-
-    if parent.id == id:
-        raise ValidationError('Задача не может быть родителем для самой себя')
+            
+    if parent:
+        if parent.id == id:
+            raise ValidationError('Задача не может быть родителем для самой себя')

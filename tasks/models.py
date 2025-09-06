@@ -24,9 +24,9 @@ class Task(models.Model):
         HIGH = 'high', 'высокий'
 
 
-    executor = models.ForeignKey(User, related_name='tasks', verbose_name='исполнитель', on_delete=models.SET_NULL,
+    executor = models.ForeignKey(User, related_name='executed_tasks', verbose_name='исполнитель', on_delete=models.SET_NULL,
                                  blank=True, null=True, db_index=True)
-    author = models.ForeignKey(User, related_name='tasks', verbose_name='автор', on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(User, related_name='authored_tasks', verbose_name='автор', on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=150, verbose_name='имя задачи')
     description = models.TextField(verbose_name='описание задачи')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.CREATED, db_index=True)
