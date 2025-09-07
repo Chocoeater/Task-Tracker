@@ -24,6 +24,7 @@ class TaskReadSerializer(serializers.ModelSerializer):
         model = Task
         fields = [
             'id',
+            'name',
             'executor_name',
             'author_email',
             'subtasks',

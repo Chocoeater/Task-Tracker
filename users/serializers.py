@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.fields import SerializerMethodField
+from rest_framework.serializers import ModelSerializer, CharField, IntegerField
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.utils import timezone
+from tasks.serializers import TaskReadSerializer
 
 User = get_user_model()
 
@@ -42,6 +44,25 @@ class UserWriteSerializer(ModelSerializer):
             middle_name=validated_data.get('middle_name') # может быть None
         )
         return user
+
+class UserBusySerializer(ModelSerializer):
+    tasks = SerializerMethodField()
+    active_tasks_count = IntegerField(read_only=True)
+
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'full_name',
+            'email',
+            'active_tasks_count',
+            'tasks'
+        ]
+
+    def get_tasks(self, obj):
+        active_tasks = obj.executed_tasks.filter(status='in_progress')
+        return TaskReadSerializer(active_tasks, many=True).data
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod

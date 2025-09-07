@@ -4,9 +4,10 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.db.models import Count, Q
 
 from users.permissions import IsManagerOrAdmin, IsAdmin
-from users.serializers import UserWriteSerializer, UserReadSerializer, MyTokenObtainPairSerializer
+from users.serializers import UserWriteSerializer, UserReadSerializer, MyTokenObtainPairSerializer, UserBusySerializer
 
 User = get_user_model()
 
@@ -30,6 +31,8 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return UserWriteSerializer
+        elif self.action == 'busy_executors':
+            return UserBusySerializer
         return UserReadSerializer
 
     @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
@@ -46,6 +49,20 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, IsManagerOrAdmin])
+    def busy_executors(self, request):
+        busy_users = (
+            User.objects
+            .annotate(active_tasks_count=Count('executed_tasks',
+                                               filter=Q(executed_tasks__status="in_progress")))
+            .filter(active_tasks_count__gt=0)
+            .order_by('-active_tasks_count')
+        )
+        serializer = self.get_serializer(busy_users, many=True)
+        return Response(serializer.data)
+
+
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer

@@ -1,5 +1,6 @@
 
 from django.contrib.auth import get_user_model
+from django.db.models import Count, Q, Min
 from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -8,6 +9,7 @@ from rest_framework.response import Response
 
 from tasks import serializers
 from tasks.models import Task
+from tasks.services import get_important_task_and_candidates
 from users.permissions import IsManagerOrAdmin
 
 User = get_user_model()
@@ -113,3 +115,7 @@ class TasksViewSet(viewsets.ModelViewSet):
         free_tasks = Task.objects.filter(executor__isnull=True)
         serializer = serializers.TaskReadSerializer(free_tasks, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, IsManagerOrAdmin])
+    def important(self, request):
+        return Response(get_important_task_and_candidates())
