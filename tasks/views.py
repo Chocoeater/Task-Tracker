@@ -2,13 +2,17 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Q, Min
 from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from tasks import serializers
+from tasks.filters import TaskFilter
 from tasks.models import Task
+from tasks.paginators import TaskPaginator
 from tasks.services import get_important_task_and_candidates
 from users.permissions import IsManagerOrAdmin
 
@@ -16,6 +20,12 @@ User = get_user_model()
 
 
 class TasksViewSet(viewsets.ModelViewSet):
+    pagination_class = TaskPaginator
+    filterset_class = TaskFilter
+
+    search_fields = ['name', 'description']
+    ordering_fields = ['deadline', 'priority', 'created_at']
+    ordering = ['-created_at']
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -27,9 +37,10 @@ class TasksViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser or user.role == 'manager' or self.action == 'assign':
-            return Task.objects.all()
-        return Task.objects.filter(executor=user)
+        qs = Task.objects.all()
+        if not (user.is_superuser or user.role == 'manager' or self.action == 'assign'):
+            qs = qs.filter(executor=user)
+        return qs
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
