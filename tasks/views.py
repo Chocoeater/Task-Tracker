@@ -1,6 +1,5 @@
 
 from django.contrib.auth import get_user_model
-from django.db.models import Count, Q, Min
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -21,6 +20,8 @@ User = get_user_model()
 
 class TasksViewSet(viewsets.ModelViewSet):
     pagination_class = TaskPaginator
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
     filterset_class = TaskFilter
 
     search_fields = ['name', 'description']
