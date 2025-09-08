@@ -117,6 +117,7 @@ class TasksViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary="Снять исполнителя",
         description="Снимает исполнителя с задачи. Доступно только менеджеру или администратору.",
+        request=None,
         responses={
             200: OpenApiResponse(description="Исполнитель снят"),
             400: OpenApiResponse(description="У задачи нет исполнителя")
@@ -142,6 +143,7 @@ class TasksViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary="Завершить задачу",
         description="Отмечает задачу как выполненную. Может сделать сам исполнитель, менеджер или админ.",
+        request=None,
         responses={
             200: OpenApiResponse(description="Задача завершена"),
             400: OpenApiResponse(description="Нельзя завершить задачу")
