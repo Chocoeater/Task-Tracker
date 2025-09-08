@@ -40,3 +40,10 @@ def get_important_task_and_candidates():
             'candidates': list(candidates)
         })
     return response_data
+
+def all_subtasks_is_done(parent_task):
+    """True, если все подзадачи выполнены"""
+    for subtask in parent_task.subtasks:
+        if subtask.status != 'done':
+            return False
+    return True

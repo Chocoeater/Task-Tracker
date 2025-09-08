@@ -12,7 +12,7 @@ from tasks import serializers
 from tasks.filters import TaskFilter
 from tasks.models import Task
 from tasks.paginators import TaskPaginator
-from tasks.services import get_important_task_and_candidates
+from tasks.services import get_important_task_and_candidates, all_subtasks_is_done
 from users.permissions import IsManagerOrAdmin
 
 User = get_user_model()
@@ -109,6 +109,11 @@ class TasksViewSet(viewsets.ModelViewSet):
                 task.status = 'done'
                 task.completed_at = timezone.now()
                 task.save(update_fields=['status', 'completed_at'])
+                if task.parent:
+                    if all_subtasks_is_done(task.parent):
+                        task.parent.status = 'done'
+                        task.parent.completed_at = timezone.now()
+                        task.save(update_fields=['status', 'completed_at'])
                 return Response(
                     {'detail': f'Задача "{task.name}" выполнена!'},
                     status=status.HTTP_200_OK
