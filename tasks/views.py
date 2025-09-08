@@ -2,6 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiResponse
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -18,6 +19,23 @@ from users.permissions import IsManagerOrAdmin
 User = get_user_model()
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Список задач",
+        description="Возвращает список задач. Для обычного пользователя — только его задачи, для менеджера/админа — все."
+    ),
+    retrieve=extend_schema(
+        summary="Детали задачи",
+        description="Возвращает полную информацию о задаче."
+    ),
+    create=extend_schema(
+        summary="Создание задачи",
+        description="Доступно только менеджеру или администратору."
+    ),
+    update=extend_schema(summary="Обновление задачи"),
+    partial_update=extend_schema(summary="Частичное обновление задачи"),
+    destroy=extend_schema(summary="Удаление задачи"),
+)
 class TasksViewSet(viewsets.ModelViewSet):
     pagination_class = TaskPaginator
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -38,6 +56,10 @@ class TasksViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+
+        if getattr(self, "swagger_fake_view", False) or not user.is_authenticated:
+            return Task.objects.none() # Чтобы spec не ругался
+
         qs = Task.objects.all()
         if not (user.is_superuser or user.role == 'manager' or self.action == 'assign'):
             qs = qs.filter(executor=user)
@@ -50,6 +72,16 @@ class TasksViewSet(viewsets.ModelViewSet):
             return serializers.TaskAssignSerializer
         return serializers.TaskWriteSerializer
 
+    @extend_schema(
+        summary="Назначить исполнителя",
+        description="Назначает исполнителя на задачу. "
+                    "Менеджер/админ может назначить любого пользователя, обычный пользователь — только себя.",
+        responses={
+            200: OpenApiResponse(description="Задача назначена"),
+            400: OpenApiResponse(description="Задача уже взята или ошибка валидации"),
+            403: OpenApiResponse(description="Нет прав назначить исполнителя")
+        }
+    )
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def assign(self, request, pk=None): # pk, шоб DRF не ругался
         task = self.get_object()
@@ -82,6 +114,14 @@ class TasksViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK
         )
 
+    @extend_schema(
+        summary="Снять исполнителя",
+        description="Снимает исполнителя с задачи. Доступно только менеджеру или администратору.",
+        responses={
+            200: OpenApiResponse(description="Исполнитель снят"),
+            400: OpenApiResponse(description="У задачи нет исполнителя")
+        }
+    )
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsManagerOrAdmin])
     def release(self, request, pk=None):
         task = self.get_object()
@@ -99,6 +139,14 @@ class TasksViewSet(viewsets.ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    @extend_schema(
+        summary="Завершить задачу",
+        description="Отмечает задачу как выполненную. Может сделать сам исполнитель, менеджер или админ.",
+        responses={
+            200: OpenApiResponse(description="Задача завершена"),
+            400: OpenApiResponse(description="Нельзя завершить задачу")
+        }
+    )
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def complete(self, request, pk=None):
         task = self.get_object()
@@ -127,12 +175,24 @@ class TasksViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    @extend_schema(
+        summary="Свободные задачи",
+        description="Возвращает список задач без исполнителя.",
+        responses={200: serializers.TaskReadSerializer(many=True)}
+    )
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], pagination_class=None)
     def free(self, request):
         free_tasks = Task.objects.filter(executor__isnull=True)
         serializer = serializers.TaskReadSerializer(free_tasks, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, IsManagerOrAdmin])
+    @extend_schema(
+        summary="Важные задачи",
+        description="Возвращает список приоритетных задач и кандидатов на исполнение.",
+        responses={200: serializers.ImportantTaskCandidateSerializer(many=True)}
+    )
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, IsManagerOrAdmin], pagination_class=None)
     def important(self, request):
-        return Response(get_important_task_and_candidates())
+        data = get_important_task_and_candidates()
+        serializer = serializers.ImportantTaskCandidateSerializer(data, many=True)
+        return Response(serializer.data)

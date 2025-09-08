@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiResponse
 from rest_framework.decorators import action
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
@@ -13,6 +14,25 @@ from users.serializers import UserWriteSerializer, UserReadSerializer, MyTokenOb
 
 User = get_user_model()
 
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="Список пользователей",
+        description="Возвращает список всех пользователей. Доступно менеджеру или администратору."
+    ),
+    retrieve=extend_schema(
+        summary="Детали пользователя",
+        description="Возвращает полную информацию о пользователе."
+    ),
+    create=extend_schema(
+        summary="Создание пользователя",
+        description="Доступно только администратору."
+    ),
+    update=extend_schema(summary="Обновление пользователя"),
+    partial_update=extend_schema(summary="Частичное обновление пользователя"),
+    destroy=extend_schema(summary="Удаление пользователя")
+)
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -40,6 +60,14 @@ class UserViewSet(viewsets.ModelViewSet):
             return UserBusySerializer
         return UserReadSerializer
 
+    @extend_schema(
+        summary="Моя учётная запись",
+        description="Возвращает или обновляет информацию о текущем пользователе.",
+        responses={
+            200: UserReadSerializer,
+            400: OpenApiResponse(description="Ошибка валидации")
+        }
+    )
     @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
     def me(self, request):
 
@@ -55,6 +83,11 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
 
+    @extend_schema(
+        summary="Занятые исполнители",
+        description="Возвращает список пользователей, у которых есть активные задачи.",
+        responses={200: UserBusySerializer(many=True)}
+    )
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, IsManagerOrAdmin])
     def busy_executors(self, request):
         busy_users = (

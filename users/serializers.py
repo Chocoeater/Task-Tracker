@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from drf_spectacular.utils import extend_schema_field
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer, CharField, IntegerField
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -60,6 +61,7 @@ class UserBusySerializer(ModelSerializer):
             'tasks'
         ]
 
+    @extend_schema_field(TaskReadSerializer(many=True))
     def get_tasks(self, obj):
         active_tasks = obj.executed_tasks.filter(status='in_progress')
         return TaskReadSerializer(active_tasks, many=True).data

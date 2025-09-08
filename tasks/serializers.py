@@ -2,6 +2,8 @@ from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from rest_framework.fields import SerializerMethodField
 from rest_framework import serializers
 
@@ -43,11 +45,13 @@ class TaskReadSerializer(serializers.ModelSerializer):
     executor_name = serializers.CharField(source="executor.full_name", read_only=True)
     author_email = serializers.CharField(source="author.email", read_only=True)
 
+    @extend_schema_field(OpenApiTypes.DURATION)
     def get_time_left(self, obj):
         if obj.deadline and obj.status in ['created', 'in_progress']:
             return obj.deadline - timezone.now()
         return None
 
+    @extend_schema_field(OpenApiTypes.BOOL)
     def get_is_overdue(self, obj):
         time_left = self.get_time_left(obj)
         if time_left is not None:
@@ -85,3 +89,12 @@ class TaskAssignSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Пользователя с таким ID не существует')
         return value
 
+
+class ImportantTaskCandidateSerializer(serializers.Serializer):
+    task_id = serializers.IntegerField(help_text="ID задачи")
+    name = serializers.CharField(help_text="Название задачи")
+    deadline = serializers.DateTimeField(help_text="Дедлайн задачи")
+    candidates = serializers.ListField(
+        child=serializers.CharField(),
+        help_text="Список кандидатов на выполнение"
+    )

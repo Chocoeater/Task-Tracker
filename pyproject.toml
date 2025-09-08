@@ -13,7 +13,8 @@ dependencies = [
     "dotenv (>=0.9.9,<0.10.0)",
     "djangorestframework (>=3.16.1,<4.0.0)",
     "django-filter (>=25.1,<26.0)",
-    "djangorestframework-simplejwt (>=5.5.1,<6.0.0)"
+    "djangorestframework-simplejwt (>=5.5.1,<6.0.0)",
+    "drf-spectacular (>=0.28.0,<0.29.0)",
 ]
 
 
