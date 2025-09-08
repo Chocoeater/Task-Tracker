@@ -101,7 +101,11 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-
+@extend_schema(
+        summary="Получение токена",
+        description="Возвращает токены для авторизации"
+    )
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
     permission_classes = [AllowAny]
+
