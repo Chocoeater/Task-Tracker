@@ -49,6 +49,8 @@ class UserViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated, IsManagerOrAdmin]
         elif self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [IsAuthenticated, IsAdmin]
+        elif self.action == 'me':
+            permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAuthenticated, IsManagerOrAdmin]
         return [perm() for perm in permission_classes]

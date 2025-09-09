@@ -25,3 +25,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.group.exec.dependencies]
 ipython = "^9.5.0"
 
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.10.6"
+

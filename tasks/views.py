@@ -47,7 +47,7 @@ class TasksViewSet(viewsets.ModelViewSet):
     ordering = ['-created_at']
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+        if self.action in ['create', 'update', 'partial_update', 'destroy', 'release', 'important']:
             permission_classes = [IsAuthenticated, IsManagerOrAdmin]
         else:
             permission_classes = [IsAuthenticated]
@@ -61,7 +61,7 @@ class TasksViewSet(viewsets.ModelViewSet):
             return Task.objects.none() # Чтобы spec не ругался
 
         qs = Task.objects.all()
-        if not (user.is_superuser or user.role == 'manager' or self.action == 'assign'):
+        if not (user.is_superuser or user.role == 'manager' or self.action in ['assign', 'release']):
             qs = qs.filter(executor=user)
         return qs
 
@@ -82,7 +82,7 @@ class TasksViewSet(viewsets.ModelViewSet):
             403: OpenApiResponse(description="Нет прав назначить исполнителя")
         }
     )
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'])
     def assign(self, request, pk=None): # pk, шоб DRF не ругался
         task = self.get_object()
         serializer = self.get_serializer(data=request.data)
@@ -123,7 +123,7 @@ class TasksViewSet(viewsets.ModelViewSet):
             400: OpenApiResponse(description="У задачи нет исполнителя")
         }
     )
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsManagerOrAdmin])
+    @action(detail=True, methods=['post'])
     def release(self, request, pk=None):
         task = self.get_object()
 
@@ -149,7 +149,7 @@ class TasksViewSet(viewsets.ModelViewSet):
             400: OpenApiResponse(description="Нельзя завершить задачу")
         }
     )
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'])
     def complete(self, request, pk=None):
         task = self.get_object()
         user = request.user
@@ -182,7 +182,7 @@ class TasksViewSet(viewsets.ModelViewSet):
         description="Возвращает список задач без исполнителя.",
         responses={200: serializers.TaskReadSerializer(many=True)}
     )
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], pagination_class=None)
+    @action(detail=False, methods=['get'], pagination_class=None)
     def free(self, request):
         free_tasks = Task.objects.filter(executor__isnull=True)
         serializer = serializers.TaskReadSerializer(free_tasks, many=True)
@@ -193,7 +193,7 @@ class TasksViewSet(viewsets.ModelViewSet):
         description="Возвращает список приоритетных задач и кандидатов на исполнение.",
         responses={200: serializers.ImportantTaskCandidateSerializer(many=True)}
     )
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, IsManagerOrAdmin], pagination_class=None)
+    @action(detail=False, methods=['get'], pagination_class=None)
     def important(self, request):
         data = get_important_task_and_candidates()
         serializer = serializers.ImportantTaskCandidateSerializer(data, many=True)
