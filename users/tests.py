@@ -2,24 +2,39 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
+from tasks.models import Task
+
 
 User = get_user_model()
-from tasks.models import Task
+
 
 class UsersTests(APITestCase):
     def setUp(self):
         self.admin = User.objects.create(
-            email="admin@example.com", password="password123", is_superuser=True, is_active=True
+            email="admin@example.com",
+            password="password123",
+            is_superuser=True,
+            is_active=True,
         )
         self.manager = User.objects.create(
-            email="manager@example.com", password="password123", role="manager", is_active=True
+            email="manager@example.com",
+            password="password123",
+            role="manager",
+            is_active=True,
         )
         self.dev = User.objects.create(
-            email="dev@example.com", password="password123", role="developer", is_active=True
+            email="dev@example.com",
+            password="password123",
+            role="developer",
+            is_active=True,
         )
 
         Task.objects.create(
-            name="Dev Task", description="Task 1", author=self.manager, executor=self.dev, status="in_progress"
+            name="Dev Task",
+            description="Task 1",
+            author=self.manager,
+            executor=self.dev,
+            status="in_progress",
         )
 
     def test_me_get(self):
@@ -72,7 +87,7 @@ class UsersTests(APITestCase):
             "password": "newpass123",
             "first_name": "First",
             "last_name": "Last",
-            "role": "developer"
+            "role": "developer",
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

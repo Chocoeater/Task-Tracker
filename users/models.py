@@ -3,7 +3,9 @@ from django.db import models
 
 
 class User(AbstractUser):
-    email = models.EmailField(unique=True, verbose_name="E-mail", help_text="Введите адрес электронной почты")
+    email = models.EmailField(
+        unique=True, verbose_name="E-mail", help_text="Введите адрес электронной почты"
+    )
     username = None
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
@@ -22,7 +24,7 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ["first_name", "last_name"]
 
     class Meta:
         verbose_name = "пользователь"
@@ -37,4 +39,3 @@ class User(AbstractUser):
         parts = [self.last_name, self.first_name, self.middle_name]
         full = " ".join(p for p in parts if p)
         return full.strip() if full else self.email
-

@@ -10,34 +10,37 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.db.models import Count, Q
 
 from users.permissions import IsManagerOrAdmin, IsAdmin
-from users.serializers import UserWriteSerializer, UserReadSerializer, MyTokenObtainPairSerializer, UserBusySerializer
+from users.serializers import (
+    UserWriteSerializer,
+    UserReadSerializer,
+    MyTokenObtainPairSerializer,
+    UserBusySerializer,
+)
 
 User = get_user_model()
-
 
 
 @extend_schema_view(
     list=extend_schema(
         summary="Список пользователей",
-        description="Возвращает список всех пользователей. Доступно менеджеру или администратору."
+        description="Возвращает список всех пользователей. Доступно менеджеру или администратору.",
     ),
     retrieve=extend_schema(
         summary="Детали пользователя",
-        description="Возвращает полную информацию о пользователе."
+        description="Возвращает полную информацию о пользователе.",
     ),
     create=extend_schema(
-        summary="Создание пользователя",
-        description="Доступно только администратору."
+        summary="Создание пользователя", description="Доступно только администратору."
     ),
     update=extend_schema(summary="Обновление пользователя"),
     partial_update=extend_schema(summary="Частичное обновление пользователя"),
-    destroy=extend_schema(summary="Удаление пользователя")
+    destroy=extend_schema(summary="Удаление пользователя"),
 )
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    search_fields = ['first_name', 'last_name', 'middle_name', 'email']
-    ordering_fields = ['last_name', 'first_name']
+    search_fields = ["first_name", "last_name", "middle_name", "email"]
+    ordering_fields = ["last_name", "first_name"]
 
     def perform_create(self, serializer):
         user = serializer.save(is_active=True)
@@ -45,20 +48,20 @@ class UserViewSet(viewsets.ModelViewSet):
         user.save()
 
     def get_permissions(self):
-        if self.action == 'list':
+        if self.action == "list":
             permission_classes = [IsAuthenticated, IsManagerOrAdmin]
-        elif self.action in ['create', 'update', 'partial_update', 'destroy']:
+        elif self.action in ["create", "update", "partial_update", "destroy"]:
             permission_classes = [IsAuthenticated, IsAdmin]
-        elif self.action == 'me':
+        elif self.action == "me":
             permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAuthenticated, IsManagerOrAdmin]
         return [perm() for perm in permission_classes]
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
+        if self.action in ["create", "update", "partial_update"]:
             return UserWriteSerializer
-        elif self.action == 'busy_executors':
+        elif self.action == "busy_executors":
             return UserBusySerializer
         return UserReadSerializer
 
@@ -67,19 +70,21 @@ class UserViewSet(viewsets.ModelViewSet):
         description="Возвращает или обновляет информацию о текущем пользователе.",
         responses={
             200: UserReadSerializer,
-            400: OpenApiResponse(description="Ошибка валидации")
-        }
+            400: OpenApiResponse(description="Ошибка валидации"),
+        },
     )
-    @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
+    @action(
+        detail=False, methods=["get", "patch"], permission_classes=[IsAuthenticated]
+    )
     def me(self, request):
 
         user = request.user
 
-        if request.method == 'GET':
+        if request.method == "GET":
             serializer = UserReadSerializer(user)
             return Response(serializer.data)
 
-        if request.method == 'PATCH':
+        if request.method == "PATCH":
             serializer = UserWriteSerializer(user, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
@@ -88,26 +93,30 @@ class UserViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary="Занятые исполнители",
         description="Возвращает список пользователей, у которых есть активные задачи.",
-        responses={200: UserBusySerializer(many=True)}
+        responses={200: UserBusySerializer(many=True)},
     )
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, IsManagerOrAdmin])
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[IsAuthenticated, IsManagerOrAdmin],
+    )
     def busy_executors(self, request):
         busy_users = (
-            User.objects
-            .annotate(active_tasks_count=Count('executed_tasks',
-                                               filter=Q(executed_tasks__status="in_progress")))
+            User.objects.annotate(
+                active_tasks_count=Count(
+                    "executed_tasks", filter=Q(executed_tasks__status="in_progress")
+                )
+            )
             .filter(active_tasks_count__gt=0)
-            .order_by('-active_tasks_count')
+            .order_by("-active_tasks_count")
         )
         serializer = self.get_serializer(busy_users, many=True)
         return Response(serializer.data)
 
 
 @extend_schema(
-        summary="Получение токена",
-        description="Возвращает токены для авторизации"
-    )
+    summary="Получение токена", description="Возвращает токены для авторизации"
+)
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
     permission_classes = [AllowAny]
-

@@ -7,26 +7,66 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Task',
+            name="Task",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=150, verbose_name='имя задачи')),
-                ('description', models.TextField(verbose_name='описание задачи')),
-                ('status', models.CharField(choices=[('created', 'создана'), ('in_progress', 'в работе'), ('done', 'исполнена'), ('not_done', 'не исполнена'), ('blocked', 'отозвана')], db_index=True, default='created', max_length=20)),
-                ('priority', models.CharField(choices=[('low', 'низкий'), ('medium', 'средний'), ('high', 'высокий')], default='medium', max_length=20)),
-                ('deadline', models.DateTimeField(blank=True, db_index=True, null=True, verbose_name='срок выполнения')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('completed_at', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=150, verbose_name="имя задачи")),
+                ("description", models.TextField(verbose_name="описание задачи")),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("created", "создана"),
+                            ("in_progress", "в работе"),
+                            ("done", "исполнена"),
+                            ("not_done", "не исполнена"),
+                            ("blocked", "отозвана"),
+                        ],
+                        db_index=True,
+                        default="created",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "priority",
+                    models.CharField(
+                        choices=[
+                            ("low", "низкий"),
+                            ("medium", "средний"),
+                            ("high", "высокий"),
+                        ],
+                        default="medium",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "deadline",
+                    models.DateTimeField(
+                        blank=True,
+                        db_index=True,
+                        null=True,
+                        verbose_name="срок выполнения",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("completed_at", models.DateTimeField(blank=True, null=True)),
             ],
             options={
-                'verbose_name': 'задача',
-                'verbose_name_plural': 'задачи',
+                "verbose_name": "задача",
+                "verbose_name_plural": "задачи",
             },
         ),
     ]

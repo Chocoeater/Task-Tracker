@@ -7,30 +7,34 @@ from tasks.models import Task
 
 User = get_user_model()
 
+
 class TasksTests(APITestCase):
     def setUp(self):
         self.dev = User.objects.create(
-            email='dev@test.com', password='test1234', role='developer', is_active=True
+            email="dev@test.com", password="test1234", role="developer", is_active=True
         )
         self.other_dev = User.objects.create(
-            email='dev2@test.com', password='test1234', role='developer', is_active=True
+            email="dev2@test.com", password="test1234", role="developer", is_active=True
         )
         self.manager = User.objects.create(
-            email='manager@test.com', password='test1234', role='manager', is_active=True
+            email="manager@test.com",
+            password="test1234",
+            role="manager",
+            is_active=True,
         )
 
         self.task_free = Task.objects.create(
-            name='Test free task',
-            description='test',
-            deadline='2025-12-31T23:59:59+03:00'
+            name="Test free task",
+            description="test",
+            deadline="2025-12-31T23:59:59+03:00",
         )
         self.task_taken = Task.objects.create(
-            name='Test task',
-            description='test',
-            deadline='2025-12-31T23:59:59+03:00',
+            name="Test task",
+            description="test",
+            deadline="2025-12-31T23:59:59+03:00",
             executor=self.dev,
-            status='in_progress',
-            author=self.manager
+            status="in_progress",
+            author=self.manager,
         )
 
         self.list_url = reverse("tasks:tasks-list")
@@ -48,13 +52,13 @@ class TasksTests(APITestCase):
         self.client.force_authenticate(self.manager)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_list_dev(self):
         self.client.force_authenticate(self.dev)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
     def test_assign_manager_can_assign_anyone(self):
         self.client.force_authenticate(self.manager)
@@ -98,6 +102,3 @@ class TasksTests(APITestCase):
         self.client.force_authenticate(self.manager)
         response = self.client.get(self.important_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
-

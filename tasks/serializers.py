@@ -12,8 +12,10 @@ from tasks.models import Task
 
 User = get_user_model()
 
+
 class TaskSubtaskSerializer(serializers.ModelSerializer):
     """Подзадачи"""
+
     class Meta:
         model = Task
         fields = ["id", "name", "status", "priority", "deadline"]
@@ -25,18 +27,18 @@ class TaskReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = [
-            'id',
-            'name',
-            'executor_name',
-            'author_email',
-            'subtasks',
-            'status',
-            'priority',
-            'created_at',
-            'updated_at',
-            'completed_at',
-            'time_left',
-            'is_overdue'
+            "id",
+            "name",
+            "executor_name",
+            "author_email",
+            "subtasks",
+            "status",
+            "priority",
+            "created_at",
+            "updated_at",
+            "completed_at",
+            "time_left",
+            "is_overdue",
         ]
 
     subtasks = TaskSubtaskSerializer(many=True, read_only=True)
@@ -47,7 +49,7 @@ class TaskReadSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(OpenApiTypes.DURATION)
     def get_time_left(self, obj):
-        if obj.deadline and obj.status in ['created', 'in_progress']:
+        if obj.deadline and obj.status in ["created", "in_progress"]:
             return obj.deadline - timezone.now()
         return None
 
@@ -59,34 +61,38 @@ class TaskReadSerializer(serializers.ModelSerializer):
         return None
 
 
-
 class TaskWriteSerializer(serializers.ModelSerializer):
     """Для создания таски"""
+
     class Meta:
         model = Task
         fields = [
-            'name',
-            'description',
-            'priority',
-            'deadline',
-            'parent',
+            "name",
+            "description",
+            "priority",
+            "deadline",
+            "parent",
         ]
+
     def validate(self, attrs):
         validators.validate_deadline(attrs, self.instance)
         validators.validate_parent(attrs, self.instance)
         return attrs
 
+
 class TaskAssignSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ['executor_id']
+        fields = ["executor_id"]
 
-    executor_id = serializers.IntegerField(required=False, help_text='ID пользователя для назначения')
+    executor_id = serializers.IntegerField(
+        required=False, help_text="ID пользователя для назначения"
+    )
 
     def validate_executor_id(self, value):
         if not User.objects.filter(id=value).exists():
-            raise serializers.ValidationError('Пользователя с таким ID не существует')
+            raise serializers.ValidationError("Пользователя с таким ID не существует")
         return value
 
 
@@ -95,6 +101,5 @@ class ImportantTaskCandidateSerializer(serializers.Serializer):
     name = serializers.CharField(help_text="Название задачи")
     deadline = serializers.DateTimeField(help_text="Дедлайн задачи")
     candidates = serializers.ListField(
-        child=serializers.CharField(),
-        help_text="Список кандидатов на выполнение"
+        child=serializers.CharField(), help_text="Список кандидатов на выполнение"
     )
