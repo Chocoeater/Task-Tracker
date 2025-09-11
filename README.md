@@ -44,7 +44,7 @@ poetry install
 poetry shell
 ```
 
-5. Создаем `.env` файл в папке `back/` с содержимым (пример):
+5. Создаем `.env` файл в корне проекта с содержимым (пример):
 
 ```env
 DEBUG=True
@@ -97,26 +97,6 @@ docker-compose -f docker-compose.dev.yml exec back python manage.py create_admin
 ```
 
 5. Проект доступен на [http://localhost:8000](http://localhost:8000).
-
----
-
-## Структура проекта
-
-```
-Task-Tracker/
-├── back/                     # Django проект
-│   ├── config/               # Приложения: tasks, users
-│   ├── pyproject.toml        # Poetry конфигурация
-│   ├── poetry.lock
-│   ├── settings.py
-│   ├── urls.py
-│   ├── wsgi.py
-│   ├── Dockerfile.prod       # Продакшен
-│   └── Dockerfile.dev        # Разработка
-├── docker-compose.dev.yml
-├── docker-compose.prod.yml
-└── README.md
-```
 
 ---
 
