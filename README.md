@@ -163,7 +163,7 @@ docker-compose -f docker-compose.dev.yml exec back pytest
 Для локального запуска вне докера:
 
 ```bash
-python manage.py loaddata initial_data.json
+python manage.py loaddata fixtures/initial_data.json
 ```
 
 Для удаления наполнения БД:
