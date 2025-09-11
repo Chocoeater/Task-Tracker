@@ -3,126 +3,144 @@
     "model": "users.user",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "password": "pbkdf2_sha256$1000000$lk8YJubuiMZQBk4czyO8Gt$mJ/YAZbXmCxq/eeXTLWvT94kaDUQtbEoO3S/LXmVE88=",
       "is_superuser": true,
       "is_staff": true,
       "is_active": true,
       "email": "admin@example.com",
       "first_name": "Иван",
       "last_name": "Админов",
-      "role": "manager"
+      "role": "manager",
+      "created_at": "2025-09-11T18:45:47Z",
+      "updated_at": "2025-09-11T18:45:47Z"
     }
   },
   {
     "model": "users.user",
     "pk": 2,
     "fields": {
-      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "password": "pbkdf2_sha256$1000000$lk8YJubuiMZQBk4czyO8Gt$mJ/YAZbXmCxq/eeXTLWvT94kaDUQtbEoO3S/LXmVE88=",
       "is_superuser": false,
       "is_staff": false,
       "is_active": true,
       "email": "manager1@example.com",
       "first_name": "Мария",
       "last_name": "Менеджерова",
-      "role": "manager"
+      "role": "manager",
+      "created_at": "2025-09-11T18:45:47Z",
+      "updated_at": "2025-09-11T18:45:47Z"
     }
   },
   {
     "model": "users.user",
     "pk": 3,
     "fields": {
-      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "password": "pbkdf2_sha256$1000000$lk8YJubuiMZQBk4czyO8Gt$mJ/YAZbXmCxq/eeXTLWvT94kaDUQtbEoO3S/LXmVE88=",
       "is_superuser": false,
       "is_staff": false,
       "is_active": true,
       "email": "manager2@example.com",
       "first_name": "Пётр",
       "last_name": "Менеджеров",
-      "role": "manager"
+      "role": "manager",
+      "created_at": "2025-09-11T18:45:47Z",
+      "updated_at": "2025-09-11T18:45:47Z"
     }
   },
   {
     "model": "users.user",
     "pk": 4,
     "fields": {
-      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "password": "pbkdf2_sha256$1000000$lk8YJubuiMZQBk4czyO8Gt$mJ/YAZbXmCxq/eeXTLWvT94kaDUQtbEoO3S/LXmVE88=",
       "is_superuser": false,
       "is_staff": false,
       "is_active": true,
       "email": "dev1@example.com",
       "first_name": "Алексей",
       "last_name": "Разработчиков",
-      "role": "developer"
+      "role": "developer",
+      "created_at": "2025-09-11T18:45:47Z",
+      "updated_at": "2025-09-11T18:45:47Z"
     }
   },
   {
     "model": "users.user",
     "pk": 5,
     "fields": {
-      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "password": "pbkdf2_sha256$1000000$lk8YJubuiMZQBk4czyO8Gt$mJ/YAZbXmCxq/eeXTLWvT94kaDUQtbEoO3S/LXmVE88=",
       "is_superuser": false,
       "is_staff": false,
       "is_active": true,
       "email": "dev2@example.com",
       "first_name": "Ирина",
       "last_name": "Кодерова",
-      "role": "developer"
+      "role": "developer",
+      "created_at": "2025-09-11T18:45:47Z",
+      "updated_at": "2025-09-11T18:45:47Z"
     }
   },
   {
     "model": "users.user",
     "pk": 6,
     "fields": {
-      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "password": "pbkdf2_sha256$1000000$lk8YJubuiMZQBk4czyO8Gt$mJ/YAZbXmCxq/eeXTLWvT94kaDUQtbEoO3S/LXmVE88=",
       "is_superuser": false,
       "is_staff": false,
       "is_active": true,
       "email": "dev3@example.com",
       "first_name": "Николай",
       "last_name": "Программеров",
-      "role": "developer"
+      "role": "developer",
+      "created_at": "2025-09-11T18:45:47Z",
+      "updated_at": "2025-09-11T18:45:47Z"
     }
   },
   {
     "model": "users.user",
     "pk": 7,
     "fields": {
-      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "password": "pbkdf2_sha256$1000000$lk8YJubuiMZQBk4czyO8Gt$mJ/YAZbXmCxq/eeXTLWvT94kaDUQtbEoO3S/LXmVE88=",
       "is_superuser": false,
       "is_staff": false,
       "is_active": true,
       "email": "dev4@example.com",
       "first_name": "Ольга",
       "last_name": "Девелоперова",
-      "role": "developer"
+      "role": "developer",
+      "created_at": "2025-09-11T18:45:47Z",
+      "updated_at": "2025-09-11T18:45:47Z"
     }
   },
   {
     "model": "users.user",
     "pk": 8,
     "fields": {
-      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "password": "pbkdf2_sha256$1000000$lk8YJubuiMZQBk4czyO8Gt$mJ/YAZbXmCxq/eeXTLWvT94kaDUQtbEoO3S/LXmVE88=",
       "is_superuser": false,
       "is_staff": false,
       "is_active": true,
       "email": "dev5@example.com",
       "first_name": "Сергей",
       "last_name": "Кодиров",
-      "role": "developer"
+      "role": "developer",
+      "created_at": "2025-09-11T18:45:47Z",
+      "updated_at": "2025-09-11T18:45:47Z"
     }
   },
   {
     "model": "users.user",
     "pk": 9,
     "fields": {
-      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "password": "pbkdf2_sha256$1000000$lk8YJubuiMZQBk4czyO8Gt$mJ/YAZbXmCxq/eeXTLWvT94kaDUQtbEoO3S/LXmVE88=",
       "is_superuser": false,
       "is_staff": false,
       "is_active": true,
       "email": "dev6@example.com",
       "first_name": "Анна",
       "last_name": "Скриптова",
-      "role": "developer"
+      "role": "developer",
+      "created_at": "2025-09-11T18:45:47Z",
+      "updated_at": "2025-09-11T18:45:47Z"
     }
   },
 

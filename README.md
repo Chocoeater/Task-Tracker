@@ -24,6 +24,7 @@
 ```bash
 git clone https://github.com/Chocoeater/Task-Tracker.git
 cd Task-Tracker
+git checkout develop
 ````
 
 2. Устанавливаем Poetry (если ещё не установлен):
@@ -85,7 +86,7 @@ python manage.py runserver
 2. Собираем и запускаем сервисы:
 
 ```bash
-docker-compose -f docker-compose.dev.yml up --build
+docker-compose -f docker-compose.dev.yml up -d --build
 ```
 
 > Сервис `back` — Django (с Poetry внутри), `db` — PostgreSQL.
@@ -165,8 +166,20 @@ docker-compose -f docker-compose.dev.yml exec back pytest
 python manage.py loaddata initial_data.json
 ```
 
+Для удаления наполнения БД:
+```bash
+python manage.py flush
+```
+
 Для запуска в докере:
 
 ```bash
-docker-compose -f docker-compose.dev.yml exec back python manage.py loaddata initial_data.json
+docker-compose -f docker-compose.dev.yml exec back python manage.py loaddata fixtures/initial_data.json
 ```
+
+И для удаления:
+
+```bash
+docker-compose -f docker-compose.dev.yml exec back python manage.py flush
+```
+
