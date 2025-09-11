@@ -54,6 +54,8 @@ DB_USER=postgres
 DB_PASSWORD=postgres
 DB_HOST=localhost
 DB_PORT=5432
+SECRET_KEY=ваш_секретный_ключ
+DEBUG=True
 ```
 
 6. Применяем миграции:
@@ -162,4 +164,27 @@ poetry run pytest
 
 ```bash
 docker-compose -f docker-compose.dev.yml exec back pytest
+```
+
+## Фикстуры
+
+Для ручного тестирования добавлены фикстура с: 
+- 1 админом
+
+- 2 менеджерами
+
+- 6 разработчиками
+
+- 20 задачами (с подзадачами и зависимостями).
+
+Для локального запуска вне докера:
+
+```bash
+python manage.py loaddata initial_data.json
+```
+
+Для запуска в докере:
+
+```bash
+docker-compose -f docker-compose.dev.yml exec back python manage.py loaddata initial_data.json
 ```

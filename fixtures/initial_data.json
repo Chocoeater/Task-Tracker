@@ -1,0 +1,469 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "is_superuser": true,
+      "is_staff": true,
+      "is_active": true,
+      "email": "admin@example.com",
+      "first_name": "Иван",
+      "last_name": "Админов",
+      "role": "manager"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "manager1@example.com",
+      "first_name": "Мария",
+      "last_name": "Менеджерова",
+      "role": "manager"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "manager2@example.com",
+      "first_name": "Пётр",
+      "last_name": "Менеджеров",
+      "role": "manager"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "dev1@example.com",
+      "first_name": "Алексей",
+      "last_name": "Разработчиков",
+      "role": "developer"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "dev2@example.com",
+      "first_name": "Ирина",
+      "last_name": "Кодерова",
+      "role": "developer"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "dev3@example.com",
+      "first_name": "Николай",
+      "last_name": "Программеров",
+      "role": "developer"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "dev4@example.com",
+      "first_name": "Ольга",
+      "last_name": "Девелоперова",
+      "role": "developer"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 8,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "dev5@example.com",
+      "first_name": "Сергей",
+      "last_name": "Кодиров",
+      "role": "developer"
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 9,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$Z9tJ2Cs4D5oLVUo5zM5P5S$FhZPKs2f3sRgK9D2+2bm1MHduVNoE/69cB+O40ZQQuU=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true,
+      "email": "dev6@example.com",
+      "first_name": "Анна",
+      "last_name": "Скриптова",
+      "role": "developer"
+    }
+  },
+
+  {
+    "model": "tasks.task",
+    "pk": 1,
+    "fields": {
+      "author": 2,
+      "executor": 4,
+      "name": "Сделать API для аутентификации",
+      "description": "Реализовать JWT авторизацию.",
+      "status": "in_progress",
+      "priority": "high",
+      "deadline": "2025-09-30T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-01T12:00:00Z",
+      "updated_at": "2025-09-01T12:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 2,
+    "fields": {
+      "author": 2,
+      "executor": 5,
+      "name": "Написать тесты для API аутентификации",
+      "description": "Unit и интеграционные тесты",
+      "status": "created",
+      "priority": "medium",
+      "deadline": "2025-10-05T23:59:00Z",
+      "parent": 1,
+      "created_at": "2025-09-02T09:00:00Z",
+      "updated_at": "2025-09-02T09:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 3,
+    "fields": {
+      "author": 3,
+      "executor": 6,
+      "name": "Сделать фронтенд для авторизации",
+      "description": "Форма входа и регистрации",
+      "status": "created",
+      "priority": "low",
+      "deadline": "2025-10-10T23:59:00Z",
+      "parent": 1,
+      "created_at": "2025-09-03T11:00:00Z",
+      "updated_at": "2025-09-03T11:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 4,
+    "fields": {
+      "author": 3,
+      "executor": 7,
+      "name": "Сделать документацию к API",
+      "description": "Swagger / drf-spectacular",
+      "status": "in_progress",
+      "priority": "medium",
+      "deadline": "2025-10-15T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-04T10:00:00Z",
+      "updated_at": "2025-09-04T10:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 5,
+    "fields": {
+      "author": 2,
+      "executor": 8,
+      "name": "Написать CI/CD пайплайн",
+      "description": "Github Actions + Docker",
+      "status": "created",
+      "priority": "high",
+      "deadline": "2025-10-20T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-05T14:00:00Z",
+      "updated_at": "2025-09-05T14:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 6,
+    "fields": {
+      "author": 3,
+      "executor": 9,
+      "name": "Подготовить документацию для CI/CD",
+      "description": "Инструкции по деплою",
+      "status": "created",
+      "priority": "low",
+      "deadline": "2025-10-22T23:59:00Z",
+      "parent": 5,
+      "created_at": "2025-09-06T12:00:00Z",
+      "updated_at": "2025-09-06T12:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 7,
+    "fields": {
+      "author": 2,
+      "executor": 4,
+      "name": "Настроить линтеры",
+      "description": "flake8, black, isort",
+      "status": "done",
+      "priority": "medium",
+      "deadline": "2025-09-20T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-01T09:00:00Z",
+      "updated_at": "2025-09-15T09:00:00Z",
+      "completed_at": "2025-09-15T09:00:00Z"
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 8,
+    "fields": {
+      "author": 3,
+      "executor": 5,
+      "name": "Покрыть тестами модели",
+      "description": "Unit-тесты моделей",
+      "status": "in_progress",
+      "priority": "medium",
+      "deadline": "2025-09-25T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-07T10:00:00Z",
+      "updated_at": "2025-09-07T10:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 9,
+    "fields": {
+      "author": 2,
+      "executor": 6,
+      "name": "Написать тесты для API задач",
+      "description": "Проверка CRUD",
+      "status": "created",
+      "priority": "low",
+      "deadline": "2025-10-01T23:59:00Z",
+      "parent": 8,
+      "created_at": "2025-09-08T09:00:00Z",
+      "updated_at": "2025-09-08T09:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 10,
+    "fields": {
+      "author": 3,
+      "executor": 7,
+      "name": "Написать e2e тесты",
+      "description": "Тесты через Playwright",
+      "status": "created",
+      "priority": "high",
+      "deadline": "2025-10-05T23:59:00Z",
+      "parent": 8,
+      "created_at": "2025-09-08T12:00:00Z",
+      "updated_at": "2025-09-08T12:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 11,
+    "fields": {
+      "author": 2,
+      "executor": 9,
+      "name": "Подготовить staging-сервер",
+      "description": "Настроить окружение для тестирования",
+      "status": "in_progress",
+      "priority": "high",
+      "deadline": "2025-09-28T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-09T10:00:00Z",
+      "updated_at": "2025-09-09T10:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 12,
+    "fields": {
+      "author": 3,
+      "executor": 4,
+      "name": "Реализовать мониторинг",
+      "description": "Prometheus + Grafana",
+      "status": "created",
+      "priority": "medium",
+      "deadline": "2025-10-12T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-10T12:00:00Z",
+      "updated_at": "2025-09-10T12:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 13,
+    "fields": {
+      "author": 2,
+      "executor": 5,
+      "name": "Сделать миграции БД",
+      "description": "Alembic или встроенные Django",
+      "status": "done",
+      "priority": "high",
+      "deadline": "2025-09-15T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-05T09:00:00Z",
+      "updated_at": "2025-09-15T20:00:00Z",
+      "completed_at": "2025-09-15T20:00:00Z"
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 14,
+    "fields": {
+      "author": 3,
+      "executor": 6,
+      "name": "Подготовить seed-данные",
+      "description": "Фикстуры для разработки",
+      "status": "done",
+      "priority": "low",
+      "deadline": "2025-09-12T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-06T10:00:00Z",
+      "updated_at": "2025-09-12T19:00:00Z",
+      "completed_at": "2025-09-12T19:00:00Z"
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 15,
+    "fields": {
+      "author": 2,
+      "executor": 7,
+      "name": "Оптимизация Dockerfile",
+      "description": "Меньший размер образа",
+      "status": "created",
+      "priority": "medium",
+      "deadline": "2025-10-18T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-11T14:00:00Z",
+      "updated_at": "2025-09-11T14:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 16,
+    "fields": {
+      "author": 3,
+      "executor": 8,
+      "name": "Написать README",
+      "description": "Документация проекта",
+      "status": "in_progress",
+      "priority": "low",
+      "deadline": "2025-09-29T23:59:00Z",
+      "parent": 15,
+      "created_at": "2025-09-12T11:00:00Z",
+      "updated_at": "2025-09-12T11:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 17,
+    "fields": {
+      "author": 2,
+      "executor": 9,
+      "name": "Подготовить load-тесты",
+      "description": "JMeter или Locust",
+      "status": "created",
+      "priority": "high",
+      "deadline": "2025-10-07T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-13T09:00:00Z",
+      "updated_at": "2025-09-13T09:00:00Z",
+      "completed_at": null
+    }
+  },
+    {
+    "model": "tasks.task",
+    "pk": 18,
+    "fields": {
+      "author": 2,
+      "executor": 8,
+      "name": "Документация API",
+      "description": "Подготовить swagger и redoc для REST API",
+      "status": "created",
+      "priority": "medium",
+      "deadline": "2025-11-20T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-18T12:00:00Z",
+      "updated_at": "2025-09-18T12:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 19,
+    "fields": {
+      "author": 3,
+      "executor": 7,
+      "name": "Подготовить CI/CD",
+      "description": "Настроить GitHub Actions для автоматического тестирования и деплоя",
+      "status": "in_progress",
+      "priority": "high",
+      "deadline": "2025-11-25T23:59:00Z",
+      "parent": null,
+      "created_at": "2025-09-19T12:00:00Z",
+      "updated_at": "2025-09-19T12:00:00Z",
+      "completed_at": null
+    }
+  },
+  {
+    "model": "tasks.task",
+    "pk": 20,
+    "fields": {
+      "author": 3,
+      "executor": 6,
+      "name": "Тестирование CI/CD пайплайна",
+      "description": "Протестировать пайплайн на тестовом окружении",
+      "status": "created",
+      "priority": "medium",
+      "deadline": "2025-11-30T23:59:00Z",
+      "parent": 19,
+      "created_at": "2025-09-20T12:00:00Z",
+      "updated_at": "2025-09-20T12:00:00Z",
+      "completed_at": null
+    }
+  }
+]
