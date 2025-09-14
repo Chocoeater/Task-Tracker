@@ -7,6 +7,7 @@ User = get_user_model()
 
 
 def get_important_task_and_candidates():
+    """Возвращает подготовленную data с важными задачами и возможными кандидатами для выполнения"""
     important_tasks = (
         Task.objects.filter(
             status="created", executor__isnull=True, subtasks__status="in_progress"
