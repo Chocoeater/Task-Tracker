@@ -37,17 +37,68 @@ User = get_user_model()
     destroy=extend_schema(summary="Удаление пользователя"),
 )
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet для работы с пользователями.
+
+    Предоставляет CRUD-операции и дополнительные действия:
+    просмотр своей учетной записи и выборка занятых исполнителей.
+
+    Attributes
+    ----------
+    queryset : QuerySet
+        Все пользователи.
+    filter_backends : list
+        Список фильтров (DjangoFilterBackend, SearchFilter, OrderingFilter).
+    search_fields : list of str
+        Поля для поиска (first_name, last_name, middle_name, email).
+    ordering_fields : list of str
+        Поля для сортировки (last_name, first_name).
+
+    Methods
+    -------
+    perform_create(serializer)
+        Создает нового пользователя с хешированным паролем.
+    get_permissions()
+        Определяет права доступа для действия.
+    get_serializer_class()
+        Определяет сериализатор для конкретного действия.
+    me(request)
+        Возвращает или обновляет данные текущего пользователя.
+    busy_executors(request)
+        Возвращает список пользователей с активными задачами.
+    """
     queryset = User.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_fields = ["first_name", "last_name", "middle_name", "email"]
     ordering_fields = ["last_name", "first_name"]
 
     def perform_create(self, serializer):
+        """
+        Создает нового пользователя.
+
+        Parameters
+        ----------
+        serializer : UserWriteSerializer
+            Сериализатор с данными пользователя.
+
+        Notes
+        -----
+        - Устанавливает пароль пользователя через set_password.
+        - Активирует пользователя (is_active=True).
+        """
         user = serializer.save(is_active=True)
         user.set_password(user.password)
         user.save()
 
     def get_permissions(self):
+        """
+        Определяет права доступа в зависимости от действия.
+
+        Returns
+        -------
+        list
+            Список экземпляров классов разрешений.
+        """
         if self.action == "list":
             permission_classes = [IsAuthenticated, IsManagerOrAdmin]
         elif self.action in ["create", "update", "partial_update", "destroy"]:
@@ -59,6 +110,14 @@ class UserViewSet(viewsets.ModelViewSet):
         return [perm() for perm in permission_classes]
 
     def get_serializer_class(self):
+        """
+        Определяет сериализатор для текущего действия.
+
+        Returns
+        -------
+        Serializer
+            Класс сериализатора.
+        """
         if self.action in ["create", "update", "partial_update"]:
             return UserWriteSerializer
         elif self.action == "busy_executors":
@@ -77,6 +136,19 @@ class UserViewSet(viewsets.ModelViewSet):
         detail=False, methods=["get", "patch"], permission_classes=[IsAuthenticated]
     )
     def me(self, request):
+        """
+        Возвращает или обновляет данные текущего пользователя.
+
+        Parameters
+        ----------
+        request : Request
+            Объект HTTP-запроса.
+
+        Returns
+        -------
+        Response
+            Сериализованные данные пользователя или ошибки валидации.
+        """
 
         user = request.user
 
@@ -101,6 +173,19 @@ class UserViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated, IsManagerOrAdmin],
     )
     def busy_executors(self, request):
+        """
+        Возвращает список пользователей с активными задачами.
+
+        Parameters
+        ----------
+        request : Request
+            Объект HTTP-запроса.
+
+        Returns
+        -------
+        Response
+            Список пользователей с количеством активных задач и деталями задач.
+        """
         busy_users = (
             User.objects.annotate(
                 active_tasks_count=Count(
@@ -118,5 +203,18 @@ class UserViewSet(viewsets.ModelViewSet):
     summary="Получение токена", description="Возвращает токены для авторизации"
 )
 class MyTokenObtainPairView(TokenObtainPairView):
+    """
+    Вью для получения JWT токенов пользователя.
+
+    Использует кастомный сериализатор MyTokenObtainPairSerializer,
+    который добавляет email в payload токена и обновляет last_login.
+
+    Attributes
+    ----------
+    serializer_class : MyTokenObtainPairSerializer
+        Сериализатор для токена.
+    permission_classes : list
+        Список разрешений (AllowAny).
+    """
     serializer_class = MyTokenObtainPairSerializer
     permission_classes = [AllowAny]

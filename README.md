@@ -138,13 +138,13 @@ docker-compose -f docker-compose.dev.yml exec back python manage.py <коман�
 Запуск тестов через Poetry:
 
 ```bash
-poetry run pytest
+python manage.py test
 ```
 
 Запуск тестов внутри контейнера Docker:
 
 ```bash
-docker-compose -f docker-compose.dev.yml exec back pytest
+docker-compose -f docker-compose.dev.yml exec back python manage.py test
 ```
 
 ## Фикстуры

@@ -7,7 +7,59 @@ User = get_user_model()
 
 
 class Task(models.Model):
+    """
+    Модель задачи для системы управления задачами.
 
+    Описывает задачу, её автора, исполнителя, статус, приоритет и сроки выполнения.
+    Поддерживает иерархическую структуру через связь с родительской задачей.
+
+    Attributes
+    ----------
+    executor : User, optional
+        Пользователь, назначенный исполнителем задачи.
+    author : User, optional
+        Пользователь, создавший задачу.
+    name : str
+        Название задачи (макс. 150 символов).
+    description : str
+        Подробное описание задачи.
+    status : str
+        Текущий статус задачи. Возможные значения:
+
+        - ``created`` — создана
+        - ``in_progress`` — в работе
+        - ``done`` — исполнена
+        - ``not_done`` — не исполнена
+        - ``blocked`` — отозвана
+    priority : str
+        Приоритет задачи. Возможные значения:
+
+        - ``low`` — низкий
+        - ``medium`` — средний
+        - ``high`` — высокий
+    deadline : datetime, optional
+        Дедлайн выполнения задачи.
+    parent : Task, optional
+        Родительская задача (для организации подзадач).
+    created_at : datetime
+        Дата и время создания задачи (устанавливается автоматически).
+    updated_at : datetime
+        Дата и время последнего обновления (устанавливается автоматически).
+    completed_at : datetime, optional
+        Дата и время завершения задачи (устанавливается автоматически при смене
+        статуса на ``done``).
+
+    Methods
+    -------
+    __str__()
+        Возвращает название задачи.
+    clean()
+        Проверяет корректность данных (например, что задача не может быть
+        родителем самой себе).
+    save(*args, **kwargs)
+        Сохраняет задачу и при необходимости автоматически выставляет время
+        завершения.
+    """
     class Meta:
         verbose_name = "задача"
         verbose_name_plural = "задачи"
@@ -59,15 +111,44 @@ class Task(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
+        """
+        Возвращает строковое представление задачи.
+
+        Returns
+        -------
+        str
+            Название задачи.
+        """
         return self.name
 
     def clean(self):
+        """
+        Проверяет корректность данных модели.
+
+        Raises
+        ------
+        ValidationError
+            Если задача указана как родитель самой себе.
+        """
         super().clean()
 
         if self.parent and self.parent_id == self.id:
             raise ValidationError("Задача не может быть родителем для самой себя")
 
     def save(self, *args, **kwargs):
+        """
+        Сохраняет задачу в базу данных.
+
+        Если статус задачи установлен в ``done`` и поле ``completed_at``
+        ещё не заполнено, автоматически выставляется текущая дата и время.
+
+        Parameters
+        ----------
+        *args : list
+            Позиционные аргументы для метода ``save``.
+        **kwargs : dict
+            Именованные аргументы для метода ``save``.
+        """
         if self.status == self.Status.DONE and not self.completed_at:
             self.completed_at = timezone.now()
         super().save(*args, **kwargs)

@@ -36,6 +36,47 @@ User = get_user_model()
     destroy=extend_schema(summary="Удаление задачи"),
 )
 class TasksViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet для работы с задачами.
+
+    Предоставляет CRUD-операции и дополнительные действия:
+    назначение исполнителя, снятие исполнителя, завершение задачи,
+    а также выборка свободных и важных задач.
+
+    Attributes
+    ----------
+    pagination_class : TaskPaginator
+        Пагинация для списка задач.
+    filter_backends : list
+        Список фильтров (DjangoFilterBackend, SearchFilter, OrderingFilter).
+    filterset_class : TaskFilter
+        Класс фильтрации для задач.
+    search_fields : list of str
+        Поля для поиска (`name`, `description`).
+    ordering_fields : list of str
+        Поля для сортировки (`deadline`, `priority`, `created_at`).
+    ordering : list
+        Поле сортировки по умолчанию (`-created_at`).
+
+    Methods
+    -------
+    get_permissions()
+        Определяет права доступа для действия.
+    get_queryset()
+        Возвращает queryset в зависимости от роли пользователя.
+    get_serializer_class()
+        Определяет сериализатор для конкретного действия.
+    assign(request, pk=None)
+        Назначает исполнителя задачи.
+    release(request, pk=None)
+        Снимает исполнителя с задачи.
+    complete(request, pk=None)
+        Отмечает задачу как выполненную.
+    free(request)
+        Возвращает список задач без исполнителя.
+    important(request)
+        Возвращает список приоритетных задач и кандидатов на выполнение.
+    """
     pagination_class = TaskPaginator
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
@@ -46,6 +87,14 @@ class TasksViewSet(viewsets.ModelViewSet):
     ordering = ["-created_at"]
 
     def get_permissions(self):
+        """
+        Определяет права доступа в зависимости от действия.
+
+        Returns
+        -------
+        list
+            Список экземпляров классов разрешений.
+        """
         if self.action in [
             "create",
             "update",
@@ -60,6 +109,15 @@ class TasksViewSet(viewsets.ModelViewSet):
         return [perm() for perm in permission_classes]
 
     def get_queryset(self):
+        """
+        Возвращает queryset задач в зависимости от роли пользователя.
+
+        Returns
+        -------
+        QuerySet
+            Отфильтрованный список задач.
+        """
+
         user = self.request.user
 
         if getattr(self, "swagger_fake_view", False) or not user.is_authenticated:
@@ -75,6 +133,14 @@ class TasksViewSet(viewsets.ModelViewSet):
         return qs
 
     def get_serializer_class(self):
+        """
+        Определяет сериализатор для текущего действия.
+
+        Returns
+        -------
+        Serializer
+            Класс сериализатора.
+        """
         if self.action in ["list", "retrieve"]:
             return serializers.TaskReadSerializer
         elif self.action in ["assign"]:
@@ -92,7 +158,22 @@ class TasksViewSet(viewsets.ModelViewSet):
         },
     )
     @action(detail=True, methods=["post"])
-    def assign(self, request, pk=None):  # pk, шоб DRF не ругался
+    def assign(self, request, pk=None):
+        """
+        Назначает исполнителя на задачу.
+
+        Parameters
+        ----------
+        request : Request
+            Объект HTTP-запроса.
+        pk : int, optional
+            ID задачи.
+
+        Returns
+        -------
+        Response
+            Подтверждение назначения или ошибка.
+        """
         task = self.get_object()
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -140,6 +221,21 @@ class TasksViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=["post"])
     def release(self, request, pk=None):
+        """
+        Снимает исполнителя с задачи.
+
+        Parameters
+        ----------
+        request : Request
+            Объект HTTP-запроса.
+        pk : int, optional
+            ID задачи.
+
+        Returns
+        -------
+        Response
+            Подтверждение снятия или ошибка.
+        """
         task = self.get_object()
 
         if task.executor:
@@ -166,6 +262,21 @@ class TasksViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=["post"])
     def complete(self, request, pk=None):
+        """
+        Отмечает задачу как выполненную.
+
+        Parameters
+        ----------
+        request : Request
+            Объект HTTP-запроса.
+        pk : int, optional
+            ID задачи.
+
+        Returns
+        -------
+        Response
+            Подтверждение выполнения или ошибка.
+        """
         task = self.get_object()
         user = request.user
 
@@ -199,6 +310,19 @@ class TasksViewSet(viewsets.ModelViewSet):
     )
     @action(detail=False, methods=["get"], pagination_class=None)
     def free(self, request):
+        """
+        Возвращает список задач без исполнителя.
+
+        Parameters
+        ----------
+        request : Request
+            Объект HTTP-запроса.
+
+        Returns
+        -------
+        Response
+            Список свободных задач.
+        """
         free_tasks = Task.objects.filter(executor__isnull=True)
         serializer = serializers.TaskReadSerializer(free_tasks, many=True)
         return Response(serializer.data)
@@ -210,6 +334,19 @@ class TasksViewSet(viewsets.ModelViewSet):
     )
     @action(detail=False, methods=["get"], pagination_class=None)
     def important(self, request):
+        """
+       Возвращает список приоритетных задач и кандидатов на выполнение.
+
+       Parameters
+       ----------
+       request : Request
+           Объект HTTP-запроса.
+
+       Returns
+       -------
+       Response
+           Список задач и кандидатов.
+       """
         data = get_important_task_and_candidates()
         serializer = serializers.ImportantTaskCandidateSerializer(data, many=True)
         return Response(serializer.data)
